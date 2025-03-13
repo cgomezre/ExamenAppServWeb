@@ -3,105 +3,71 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
 
 using ExamenAppServWeb.Data;
 using ExamenAppServWeb.Models;
 
-namespace ExamenAppServWeb.Controllers
+namespace ExamenAppServWeb.Controller
 {
-    [System.Web.Http.RoutePrefix("api/clientes")]
-    [ApiController]
-    public class ViviendasController : ControllerBase
+    [RoutePrefix ("api/Vivienda")]
+    public class viviendaController : ApiController
     {
-        private readonly ViviendasContext _context;
-
-        public ViviendasController(ViviendasContext context)
-        {
-            _context = context;
-        }
-
-        // GET: api/viviendas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Vivienda>>> GetViviendas()
+        [Route("i")]
+        public string Insertar()
         {
-            return await _context.Viviendas.ToListAsync();
-        }
-
-        // GET: api/viviendas/{id}
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Vivienda>> GetVivienda(int id)
-        {
-            var vivienda = await _context.Viviendas.FindAsync(id);
-            if (vivienda == null)
-            {
-                return NotFound();
-            }
-            return vivienda;
-        }
-
-        // POST: api/viviendas
-        [HttpPost]
-        public async Task<ActionResult<Vivienda>> PostVivienda(Vivienda vivienda)
-        {
-            _context.Viviendas.Add(vivienda);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction("GetVivienda", new { id = vivienda.Id }, vivienda);
-        }
-
-        // PUT: api/viviendas/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutVivienda(int id, Vivienda vivienda)
-        {
-            if (id != vivienda.Id)
-            {
-                return BadRequest();
-            }
-            _context.Entry(vivienda).State = EntityState.Modified;
             try
             {
-                await _context.SaveChangesAsync();
+                dbViviendas_ITM.Viviendas.Add(vivienda);
+                dbViviendas_ITM.SaveChanges();
+                return "Vivienda insertada";
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!_context.Viviendas.Any(e => e.Id == id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return "Error al insertar la vivienda";
             }
-            return NoContent();
         }
-
-        // DELETE: api/viviendas/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteVivienda(int id)
+        [HttpGet]
+        [Route("Consultar")]
+        public string Consultar(int Id)
         {
-            var vivienda = await _context.Viviendas.FindAsync(id);
-            if (vivienda == null)
+            Vivienda viv = dbViviendas_ITM.Viviendas.FirstOrDefault(e => e.Id == Id);
+            return viv;
+        }
+        [HttpPut]
+        [Route("Actualizar")]
+        public string Actualizar()
+        {
+            try
             {
-                return NotFound();
+                Vivienda viv = Consultar(vivienda.Id);
+                if (viv == null)
+                {
+                    return "La vivienda no existe";
+                }
+                dbViviendas_ITM.Viviendas.AddOrUpdate(vivienda);
+                dbViviendas_ITM.SaveChanges();
+                return "Vivienda actualizada";
             }
-            _context.Viviendas.Remove(vivienda);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            catch (Exception ex)
+            {
+                return "Error al actualizar la vivienda";
+            }
         }
-
-        // Custom Query 1: Buscar viviendas por número de cuartos
-        [HttpGet("search/byRooms/{numCuartos}")]
-        public async Task<ActionResult<IEnumerable<Vivienda>>> GetViviendasByRooms(int numCuartos)
+        private bool Validar(string Id)
         {
-            return await _context.Viviendas.Where(v => v.NumCuartos == numCuartos).ToListAsync();
+            if (Consultar(Id) == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
-
-        // Custom Query 2: Buscar viviendas con un tamaño mayor a un valor dado
-        [HttpGet("search/bySize/{size}")]
-        public async Task<ActionResult<IEnumerable<Vivienda>>> GetViviendasBySize(decimal size)
+        public List <Vivienda> ConsultarTodos()
         {
-            return await _context.Viviendas.Where(v => v.Tamano > size).ToListAsync();
+            return dbViviendas_ITM.Viviendas.OrderBy(a => a.Tamaño).ToList();
         }
     }
 }
