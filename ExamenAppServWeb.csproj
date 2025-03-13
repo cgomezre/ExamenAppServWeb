@@ -163,10 +163,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\AgenciaController.cs" />
-    <Compile Include="Controllers\ClienteController.cs" />
-    <Compile Include="Controllers\TipoViviendaController.cs" />
-    <Compile Include="Controllers\VentaController.cs" />
+    <Compile Include="Clases\clsVivienda.cs" />
     <Compile Include="Controllers\ViviendaController.cs" />
     <Compile Include="Data\Context.cs" />
     <Compile Include="Global.asax.cs">
@@ -229,6 +226,7 @@
       <LastGenOutput>Viviendas_ITM.Context.cs</LastGenOutput>
       <DependentUpon>Viviendas_ITM.edmx</DependentUpon>
     </Content>
+    <Content Include="Models\Viviendas_ITM.sql" />
     <Content Include="Models\Viviendas_ITM.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Viviendas_ITM.edmx</DependentUpon>
