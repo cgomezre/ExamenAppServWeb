@@ -13,61 +13,43 @@ namespace ExamenAppServWeb.Controller
     public class viviendaController : ApiController
     {
         [HttpGet]
-        [Route("i")]
-        public string Insertar()
-        {
-            try
-            {
-                dbViviendas_ITM.Viviendas.Add(vivienda);
-                dbViviendas_ITM.SaveChanges();
-                return "Vivienda insertada";
-            }
-            catch (Exception ex)
-            {
-                return "Error al insertar la vivienda";
-            }
-        }
-        [HttpGet]
-        [Route("Consultar")]
-        public string Consultar(int Id)
-        {
-            Vivienda viv = dbViviendas_ITM.Viviendas.FirstOrDefault(e => e.Id == Id);
-            return viv;
-        }
-        [HttpPut]
-        [Route("Actualizar")]
-        public string Actualizar()
-        {
-            try
-            {
-                Vivienda viv = Consultar(vivienda.Id);
-                if (viv == null)
-                {
-                    return "La vivienda no existe";
-                }
-                dbViviendas_ITM.Viviendas.AddOrUpdate(vivienda);
-                dbViviendas_ITM.SaveChanges();
-                return "Vivienda actualizada";
-            }
-            catch (Exception ex)
-            {
-                return "Error al actualizar la vivienda";
-            }
-        }
-        private bool Validar(string Id)
-        {
-            if (Consultar(Id) == null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
+        [Route("ConsultarTodos")]
         public List <Vivienda> ConsultarTodos()
         {
-            return dbViviendas_ITM.Viviendas.OrderBy(a => a.Tamaño).ToList();
+            clsVivienda viv= new clsVivienda();
+            return viv.ConsultarTodos();
+        }
+        [HttpPut]
+        [Route("Consultar")]
+        public Vivienda Consultar (int Id)
+        {
+            clsVivienda viv = new clsVivienda();
+            return viv.Consultar(Id);
+        }
+        [HttpPost]
+        [Route("Insertar")]
+        public string Insertar([FromBody]Vivienda vivienda)
+        {
+            clsVivienda viv = new clsVivienda();
+            viv.vivienda = vivienda;
+            return viv.Insertar(viv);
+        }
+
+        [HttpPut]
+        [Route("Actualizar")]
+        public string Actualizar([FromBody] Vivienda vivienda)
+        {
+            clsVivienda viv = new clsVivienda();
+            viv.vivienda = vivienda;
+            return viv.Actualizar(viv);
+        }
+
+        [HttpDelete]
+        [Route("Eliminar")]
+        public string Eliminar(int Id)
+        {
+            clsVivienda viv = new clsVivienda();
+            return viv.Eliminar(Id);
         }
     }
 }
